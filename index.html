@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beni Mutlu Etmek İster Misin?</title>
+<style>
+body { text-align:center; font-family:Arial; margin-top:50px; }
+button { padding:15px 30px; font-size:18px; border-radius:8px; background:#4CAF50; color:white; border:none; cursor:pointer; }
+video, canvas { margin-top:20px; max-width:90%; border-radius:10px; border:2px solid #333; }
+</style>
+</head>
+<body>
+
+<h1>Beni mutlu etmek ister misin?</h1>
+<button id="btn">Evet</button>
+<br>
+<video id="video" autoplay playsinline></video>
+<canvas id="canvas" style="display:none;"></canvas>
+<br>
+<a id="downloadLink" style="display:none;">Fotoğrafı İndir</a>
+
+<script>
+const btn = document.getElementById('btn');
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const link = document.getElementById('downloadLink');
+
+btn.addEventListener('click', async () => {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video:true });
+        video.srcObject = stream;
+
+        // 3 saniye sonra fotoğraf çek
+        setTimeout(() => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            const dataURL = canvas.toDataURL('image/png');
+            link.href = dataURL;
+            link.download = 'fotom.png';
+            link.style.display = 'block';
+            link.innerText = 'Fotoğrafı İndir veya Paylaş';
+        }, 3000);
+    } catch(e) {
+        alert('Kamera açılamadı: ' + e);
+    }
+});
+</script>
+
+</body>
+</html>
